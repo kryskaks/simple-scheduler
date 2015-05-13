@@ -1,0 +1,14 @@
+{% macro render_field(field, lstyle = "width:200") %}
+         <div class="form_field" >                   
+        
+        {{ field.label(class="label_", style=lstyle) }}
+        {% if field.errors %}
+            {% set css_class = 'has_error ' + kwargs.pop('class', '') %}
+            {{ field(class=css_class, **kwargs) }}
+            {% for error in field.errors %}<span class="alert alert-warning">{{ error|safe }}</span>{% endfor %}
+        {% else %}            
+            {{ field(**kwargs) }}
+        {% endif %}
+        
+        {# </div> #}
+{% endmacro %}

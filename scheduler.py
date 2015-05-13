@@ -1,22 +1,28 @@
 from datetime import datetime
 import os
+import logging
 
 from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 
-def tick():
-	print('Tick! The time is: %s' % datetime.now())
-	scheduler = BlockingScheduler()
-	scheduler.add_jobstore('sqlalchemy', url=url)
-	jobs = scheduler.get_jobs()
-	print jobs
+from config import JOB_STORE_URL, LOGGER
 
-if __name__ == '__main__':
-	scheduler = BlockingScheduler()
-	url = "postgres://postgres:test@localhost/scheduler"
-	scheduler.add_jobstore('sqlalchemy', url=url)
-	#scheduler.add_job(tick, 'interval', seconds=5)
-	print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C'))
-	try:
-		scheduler.start()
-	except (KeyboardInterrupt, SystemExit):
-		pass
+class SimpleScheduler(object):
+	scheduler = None
+	def __init__(self, logger, blocking):		
+		self._scheduler = BlockingScheduler(logger = logger) if blocking else BackgroundScheduler(logger = logger)
+		print "Created %s" % self._scheduler.__class__.__name__
+		self._scheduler.add_jobstore('sqlalchemy', url=JOB_STORE_URL)
+
+	def __getattr__(self, attr):
+		try:
+			return self.__dict__[attr]					
+		except KeyError:
+			return getattr(self._scheduler, attr)
+
+	@classmethod
+	def get_scheduler(cls, logger = None, blocking = False):
+		if cls.scheduler is None:
+			cls.scheduler = SimpleScheduler(logger, blocking)
+
+		return cls.scheduler

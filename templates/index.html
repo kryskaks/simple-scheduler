@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block header %}
+Главная
+{% endblock %}
+{% block content %}
+
+<ul>
+	<li><a href="{{url_for('balance')}}">Баланс</a></li>
+	<li><a href="{{url_for('find_invoice')}}">Поиск инвойса</a></li>
+	<li><a href="{{url_for('find_payment')}}">Поиск вывода</a></li>
+	<li><a href="{{url_for('get_userentry')}}">get_userentry</a></li>	
+</ul>
+
+{% endblock %}

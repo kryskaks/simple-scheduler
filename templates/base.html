@@ -1,0 +1,80 @@
+<html>
+      <head>
+        <title>{% block title %}Nosy-PM{% endblock %}
+        </title>
+        {% block css %}
+        
+        <link rel="stylesheet" href="/static/css/bootstrap.css">                                   
+        
+        <style>
+      body {
+        padding: 40px;                
+      }
+      input[type="text"], input[type="password"], select[class="form-control"] {
+        width: 20%;
+        height: 30px;
+        padding: 5px;
+        margin-bottom: 5px;
+        margin-top: 5px;        
+        display: inline-block;        
+      }
+      
+      .table {
+        width: 95%;
+        margin-bottom: 20px;
+        border-top: 0px solid #dddddd;  
+      }     
+
+      a{
+      }
+
+    </style>        
+
+        {% endblock %}
+        {% block script %}
+        <script src="/static/js/jquery.js"></script>
+        <script src="/static/js/bootstrap.js"></script>
+
+        <script>
+
+        </script>
+                
+        {% endblock %}
+        
+      </head>
+      <body>                
+        <div class="row">                            
+          <div id="nav" class="col-md-10">                                            
+                <a href="{{url_for('hello')}}">Главная</a> |                
+                <a href="{{url_for('hello')}}">Главная</a> 
+          </div>
+          <div id="login" class="col-md-2">
+            {% if "uid" in session %}            
+            <button type="button" class="btn btn-default btn-sm">{{user.login}}</button>
+            <a href="{{url_for('logout')}}"><button type="button" class="btn btn-primary btn-sm">Logout</button></a>          
+            {% else %}
+            <p><a href=""><button type="button" class="btn btn-primary btn-sm">Login</button></a><p>
+            {% endif %}
+          </div>        
+        
+        <div id="msgs" class="col-md-6">  
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="list-unstyled">
+            {% for message in messages %}
+              <li><span class="alert-info">{{ message|safe }}</span></li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}  
+        </div>            
+
+        </div>
+        <div id="content">{% block content %}{% endblock %}</div>
+        <div id="footer">
+            {% block footer %}                
+                <a href="{{url_for('hello')}}">Главная</a> |
+                <a href="{{url_for('hello')}}">Главная</a>
+            {% endblock %}</div>
+      </body>
+</html>
