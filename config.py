@@ -24,5 +24,5 @@ JOB_STORE_URL = "postgres://postgres:test@localhost/scheduler"
 LOGGER = Struct(level = logging.DEBUG, 
 				name = "SimpleScheduler", 
 				file = "log_{date:%Y-%m-%d}.log".format(date = date.today()),
-				formatter = logging.Formatter("%(asctime)s[%(levelname)s] - %(name)s:%(message)s"))
+				formatter = logging.Formatter("%(asctime)s [%(thread)d:%(threadName)s] [%(levelname)s] - %(name)s:%(message)s"))
 

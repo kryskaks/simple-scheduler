@@ -7,6 +7,8 @@ from flask import Flask, session
 from scheduler import SimpleScheduler
 import config
 
+print "In service.py ..."
+
 app = Flask(__name__)
 app.config.from_object('config')
 
@@ -19,5 +21,6 @@ logger.addHandler(fh)
 logging.getLogger("apscheduler.executors.default").addHandler(fh)
 
 sched = SimpleScheduler.get_scheduler(logger = logger)
+sched.start()
 
 import views

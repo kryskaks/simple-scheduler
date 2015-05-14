@@ -1,4 +1,6 @@
-from flask import request, render_template
+import types
+
+from flask import request, render_template, redirect, url_for
 
 from service import app, sched
 from forms import JobForm
@@ -21,13 +23,24 @@ def jobs(job_id = None):
 def new_job():
 	if request.method == "GET":
 		job_form = JobForm()
-		job_form.func_name.choices = [(f,f.__name__) for f in user_jobs.all_jobs]
+		job_form.func_name.choices = [(o,o) for o in dir(user_jobs) if isinstance(getattr(user_jobs, o), types.FunctionType)]
 		return render_template("new_job.html", job_form = job_form)
 
 	job_name = request.form.get("name", "")
 	cron = request.form.get("cron_expression", "")
 	func_name = request.form.get("func_name", "")
 
-	print func_name
+	func = getattr(user_jobs, func_name)
 
-	return "New job creating!"
+	print "func():", func()
+
+	second = int(cron)
+
+	sched.add_job(func, id=job_name, trigger="cron", second=second)
+
+	return redirect(url_for("jobs"))
+
+@app.route('/jobs/<job_id>/remove', methods = ["GET"])
+def remove_job(job_id):
+	sched.remove_job(job_id = job_id)
+	return redirect(url_for("jobs"))
